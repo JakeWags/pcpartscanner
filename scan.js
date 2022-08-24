@@ -11,7 +11,17 @@ function scrapeSubreddit() {
         refreshToken: process.env.REFRESH_TOKEN
     });
 
-    r.getHot().map(post => post.title).then(console.log);
+    const searchType = process.env.SEARCHTYPE;
+
+
+    // user provides itemType in command line
+    let itemType = process.argv[2];
+    let postLimit = parseInt(process.argv[3]);
+    let posts = r.getSubreddit("buildapcsales").getNew({limit:postLimit}).map((post) => {
+        if (post.link_flair_text == itemType) {
+            console.log(post.title);
+        }
+    });
 }
 
 scrapeSubreddit();

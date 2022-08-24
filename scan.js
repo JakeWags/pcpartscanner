@@ -1,13 +1,14 @@
 'use strict';
 
+require('dotenv').config();
 const snoowrap = require('snoowrap');
 
 function scrapeSubreddit() {
     const r = new snoowrap({
         userAgent: 'Scans /r/buildapcsales for part',
-        clientId: 'o-vxeEEDPWqWHsqTiLRbvg',
-        clientSecret: 'yNO7vFlTtjUlIMYf4UgTEOMsn8151A',
-        refreshToken: '24732262995-5YtQopdqHM643xfzTSZOogLe6graWw'
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        refreshToken: process.env.REFRESH_TOKEN
     });
 
     r.getHot().map(post => post.title).then(console.log);

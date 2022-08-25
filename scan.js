@@ -4,6 +4,7 @@
 require('dotenv').config();
 const snoowrap = require('snoowrap');
 const http = require('http');
+const { resolve } = require('path');
 
 const r = new snoowrap({
     userAgent: 'Scans /r/buildapcsales for part',
@@ -14,29 +15,31 @@ const r = new snoowrap({
 
 const searchType = process.env.SEARCHTYPE;
 
-function scrapeSubreddit() {
+async function scrapeSubreddit() {
     // user provides itemType in command line
     let itemType = process.argv[2];
     let postLimit = parseInt(process.argv[3]);
     let retText = [];
 
-    let posts = r.getSubreddit("buildapcsales").getNew({limit:postLimit}).map((post) => {
+    let posts = await r.getSubreddit("buildapcsales").getNew({limit:postLimit}).map((post) => {
         if (post.link_flair_text == itemType) {
-            retText.push(post.title);
-            console.log(post.title);
+            retText.push(post);
         }
     });
 
-    return retText;
+    return Promise.resolve(retText);
 }
 
-http.createServer(function (request, response) {
+http.createServer(async function (request, response) {
     response.writeHead(200, {'Content-Type': 'text/plain'});
     let disString = "";
     
-    let r = scrapeSubreddit();
-    console.log(r);
-    response.end("TEST");
-}).listen(8080);
+    let r = await scrapeSubreddit().then((p) => {
+        p.forEach(post => {disString += post.title + " : " + post.url + "\n";})
+    });
+
+    response.end(disString);
+      
+ }).listen(8080);
 
 console.log("running server on 8080");

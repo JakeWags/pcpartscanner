@@ -58,7 +58,7 @@ app.post('/submit-scan', body("type").not().contains("Select a part type"), body
         p.forEach(post => {displayString += post.title + " : " + post.url + "\n";})
     });
 
-    if (disString.length == 0) {
+    if (displayString.length == 0) {
         res.end("No results found.");
     } else {
         res.end(displayString);

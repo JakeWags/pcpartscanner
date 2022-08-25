@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-validator": "^6.14.2",
     "snoowrap": "^1.23.0"
   },
   "name": "pcpartscanner",

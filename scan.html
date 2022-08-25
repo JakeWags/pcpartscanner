@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sample Site</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <style>
+    body { padding-top: 50px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="jumbotron">
+      <h1>res.sendFile() Works!</h1>
+    </div>
+  </div>
+
+  <div class="container">
+    <form action="/submit-scan" method="POST">
+        <div class="form-group">
+            <select class="form-select" name="type" aria-label="Part select dropdown">
+                <option name="" selected>Select a part type</option>
+                <option name="SSD - M.2" value="SSD - M.2">SSD - M.2</option>
+                <option name="SSD - Sata" value="SSD - Sata">SSD - Sata</option>
+                <option name="GPU" value="GPU">GPU</option>
+                <option name="CPU" value="CPU">CPU</option>
+                <option name="HDD" value="HDD">HDD</option>
+                <option name="Monitor" value="Monitor">Monitor</option>
+                <option name="RAM" value="RAM">RAM</option>
+                <option name="Motherboard" value="Motherboard">Motherboard</option>
+                <option name="Cooler" value="Cooler">Cooler</option>
+                <option name="Fan" value="Fan">Fan</option>
+                <option name="Prebuilt" value="Prebuilt">Prebuilt</option>
+            </select>
+        </div>
+        <input class="btn btn-primary" type="submit" value="Click here to submit the form"/>
+    </form>
+  </div>
+    
+</body>
+</html>

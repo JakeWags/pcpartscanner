@@ -3,8 +3,18 @@
 
 require('dotenv').config();
 const snoowrap = require('snoowrap');
-const http = require('http');
-const { resolve } = require('path');
+// const http = require('http');
+// const fs = require('fs');
+const express = require('express');
+const { body,validationResult } = require('express-validator');
+const path = require('path');
+
+const app = express();
+const port = 8080;
+
+app.use(express.urlencoded({
+    extended:true
+}));
 
 const r = new snoowrap({
     userAgent: 'Scans /r/buildapcsales for part',
@@ -30,16 +40,50 @@ async function scrapeSubreddit() {
     return Promise.resolve(retText);
 }
 
-http.createServer(async function (request, response) {
-    response.writeHead(200, {'Content-Type': 'text/plain'});
-    let disString = "";
+// http.createServer(async function (request, response) {
+//     // response.writeHead(200, {'Content-Type': 'text/plain'});
+//     // let disString = "";
     
-    let r = await scrapeSubreddit().then((p) => {
-        p.forEach(post => {disString += post.title + " : " + post.url + "\n";})
-    });
+//     // let r = await scrapeSubreddit().then((p) => {
+//     //     p.forEach(post => {disString += post.title + " : " + post.url + "\n";})
+//     // });
 
-    response.end(disString);
+//     // response.end(disString);
       
- }).listen(8080);
+//     response.writeHead(200, {
+//         'Content-Type': 'type/plain'
+//     });
+//     fs.readFile('./scan.html', null, function (error, data) {
+//         if (error) {
+//             response.writeHead(404);
+//             response.write("Error: File not found.");
+//         }
+//         else {
+//             response.write(data);
+//         }
+//         response.end();
+//     })
+//  }).listen(8080);
+
+
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname, 'scan.html'));
+});
+
+app.post('/submit-scan', (req, res) => {
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty()) {
+    //     return res.status(400).json({ errors: errors.array() });
+    // }
+
+    const select = req.body.type;
+    console.log(select);
+    
+
+    res.end(select);
+})
+
+
+app.listen(port);
 
 console.log("running server on 8080");

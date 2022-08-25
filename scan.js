@@ -72,7 +72,7 @@ app.post('/submit-scan', body("type").not().contains("Select a part type"), body
 // app.listen(port);
 https.createServer({
     key: fs.readFileSync('/etc/letsencrypt/live/jakewags.com/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/jakewags/cert.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/jakewags.com/cert.pem'),
     ca: fs.readFileSync('/etc/letsencrypt/live/jakewags.com/chain.pem'),
 }, app).listen(443, () => {
     console.log("listening on port 443...");

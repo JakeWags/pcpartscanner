@@ -7,6 +7,9 @@ const snoowrap = require('snoowrap');
 const express = require('express');
 const { body,validationResult } = require('express-validator');
 const path = require('path');
+const https = require('https');
+const fs = require('fs');
+const { ChainCondition } = require('express-validator/src/context-items');
 
 const app = express();
 const port = 8080;
@@ -66,6 +69,11 @@ app.post('/submit-scan', body("type").not().contains("Select a part type"), body
 });
 
 
-app.listen(port);
-
-console.log("running server on 8080");
+// app.listen(port);
+https.createServer({
+    key: fs.readFileSync('/etc/letsencrypt/live/jakewags.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/jakewags/cert.pem'),
+    ca: fs.readFileSync('/etc/letsencrypt/live/jakewags.com/chain.pem'),
+}, app).listen(443, () => {
+    console.log("listening on port 443...");
+});

@@ -70,17 +70,21 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'scan.html'));
 });
 
-app.post('/submit-scan', (req, res) => {
-    // const errors = validationResult(req);
-    // if (!errors.isEmpty()) {
-    //     return res.status(400).json({ errors: errors.array() });
-    // }
+app.post('/submit-scan', body("type").not().contains("Select a part type"), body("amount").isLength({max:3}), (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
 
     const select = req.body.type;
+    const amount = req.body.amount;
     console.log(select);
+    console.log(amount);
     
 
-    res.end(select);
+    // do snoowrap api calls here and populate /submit-scan with editted html?
+
+    res.end(select + " " + amount);
 })
 
 

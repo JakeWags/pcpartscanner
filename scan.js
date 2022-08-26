@@ -43,7 +43,7 @@ async function scrapeSubreddit(type, amount) {
 }
 
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, 'scan.html'));
+    res.sendFile(path.join(__dirname, 'html/scan.html'));
 });
 
 app.post('/submit-scan', body("type").not().contains("Select a part type"), body("amount").isLength({max:3}), async (req, res) => {

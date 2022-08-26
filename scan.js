@@ -55,21 +55,37 @@ app.post('/submit-scan', body("type").not().contains("Select a part type"), body
     const select = req.body.type;
     const amount = parseInt(req.body.amount);
 
-    let displayString = `<html><head><meta charset="UTF-8"><title>Scan Results</title><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"><style>body { padding-top: 50px; }</style></head><body class="mb-4"><div class="container"><div class="jumbotron"><h1>Results</h1><p>Please note: all of these results are pulled from <a class="link-primary" target="_blank" href="https://www.reddit.com/r/buildapcsales">www.reddit.com/r/buildapcsales</a> and so are not in any way published by me. Please view at your own discetion.</p></div></div><div class="container"><ol class="list-group">`;
-    let resultCount = 0;    
+    let displayString;
+    let footer;
+
+    fs.readFile(__dirname + "/html/results.html", (error, data) => {
+	if (error) { throw error; }
+	displayString = data.toString();
+    });
+
+    fs.readFile(__dirname + "/html/footer.html", (error, data) => {
+	if (error) { throw error; }
+	footer = data.toString();
+    });
+
+    let resultCount = 0;
 
     let r = await scrapeSubreddit(select, amount).then((p) => {
         p.forEach(post => {
 		displayString += `<li class="list-group-item align-middle">${post.title}<a class="btn btn-outline-primary float-right" target="_blank" href="${post.url}">LINK</a></li>`;
 		resultCount++;
 	})
-    	
+
     });
     if (resultCount == 0) {
     	displayString += `<li class="list-group-item align-middle">No results found...</li>`;
     }
-    displayString += "</ol></div></body></html>";
-        
+    displayString += "</ol></div>"
+
+    displayString += footer;
+
+    displayString += "</body></html>";
+    console.log('loading page');
     res.end(displayString);
 });
 

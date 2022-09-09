@@ -72,7 +72,7 @@ app.post('/submit-scan', body("type").not().contains("Select a part type"), body
 
     let r = await scrapeSubreddit(select, amount).then((p) => {
         p.forEach(post => {
-		displayString += `<li class="list-group-item align-middle">${post.title}<a class="btn btn-outline-primary float-right" target="_blank" href="${post.url}">LINK</a></li>`;
+		displayString += `<li class="list-group-item align-middle"><a class="link" href="#">${post.title}</a><a class="btn btn-outline-primary float-right" target="_blank" href="${post.url}">LINK</a></li>`;
 		resultCount++;
 	})
 
@@ -83,6 +83,8 @@ app.post('/submit-scan', body("type").not().contains("Select a part type"), body
     displayString += "</ol></div>"
 
     displayString += footer;
+
+    console.log(post);
 
     displayString += "</body></html>";
     console.log('loading page');

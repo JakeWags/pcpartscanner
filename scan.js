@@ -9,10 +9,8 @@ const { body,validationResult } = require('express-validator');
 const path = require('path');
 const https = require('https');
 const fs = require('fs');
-const { ChainCondition } = require('express-validator/src/context-items');
 
 const app = express();
-const port = 8080;
 
 app.use(express.urlencoded({
     extended:true
@@ -42,6 +40,56 @@ async function scrapeSubreddit(type, amount) {
     return Promise.resolve(retText);
 }
 
+async function getFormattedOutput(select, amount) {
+    let displayString, footer;
+
+    fs.readFile(__dirname + "/html/results.html", (error, data) => {
+        if (error) { throw error; }
+        displayString = data.toString();
+    });
+
+    fs.readFile(__dirname + "/html/footer.html", (error, data) => {
+        if (error) { throw error; }
+        footer = data.toString();
+    });
+
+ 
+    let resultCount = 0;
+
+    await scrapeSubreddit(select, amount).then((p) => {
+        p.forEach(post => {
+		    displayString += 
+                `<li class="list-group-item align-middle">
+                    <a class="link" target="_blank" href="https://www.reddit.com${post.permalink}">${post.title}</a>
+                    <a class="btn btn-outline-primary float-right" target="_blank" href="${post.url}">LINK</a>
+                </li>`;
+
+		    resultCount++;
+	    });
+    });
+
+    if (resultCount == 0) {
+    	displayString += `<li class="list-group-item align-middle">No results found...</li>`;
+    }
+
+    displayString += "</ol></div>"
+
+    displayString += footer;
+
+    displayString += "</body></html>";
+
+    return displayString;
+}
+
+async function processRequest(req) {
+    const select = req.body.type;
+    const amount = parseInt(req.body.amount);
+
+    let formattedData = await getFormattedOutput(select, amount);
+
+    return formattedData;
+}
+
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'html/scan.html'));
 });
@@ -52,43 +100,9 @@ app.post('/submit-scan', body("type").not().contains("Select a part type"), body
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const select = req.body.type;
-    const amount = parseInt(req.body.amount);
+    let processedRequest = await processRequest(req);
 
-    let displayString;
-    let footer;
-
-    fs.readFile(__dirname + "/html/results.html", (error, data) => {
-	if (error) { throw error; }
-	displayString = data.toString();
-    });
-
-    fs.readFile(__dirname + "/html/footer.html", (error, data) => {
-	if (error) { throw error; }
-	footer = data.toString();
-    });
-
-    let resultCount = 0;
-
-    let r = await scrapeSubreddit(select, amount).then((p) => {
-        p.forEach(post => {
-		displayString += `<li class="list-group-item align-middle"><a class="link" target="_blank" href="https://www.reddit.com${post.permalink}">${post.title}</a><a class="btn btn-outline-primary float-right" target="_blank" href="${post.url}">LINK</a></li>`;
-		resultCount++;
-	})
-
-    });
-    if (resultCount == 0) {
-    	displayString += `<li class="list-group-item align-middle">No results found...</li>`;
-    }
-    displayString += "</ol></div>"
-
-    displayString += footer;
-
-
-
-    displayString += "</body></html>";
-    console.log('loading page');
-    res.end(displayString);
+    res.end(processedRequest);
 });
 
 

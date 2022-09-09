@@ -74,7 +74,6 @@ app.post('/submit-scan', body("type").not().contains("Select a part type"), body
         p.forEach(post => {
 		displayString += `<li class="list-group-item align-middle"><a class="link" target="_blank" href="https://www.reddit.com${post.permalink}">${post.title}</a><a class="btn btn-outline-primary float-right" target="_blank" href="${post.url}">LINK</a></li>`;
 		resultCount++;
-        console.log(post);
 	})
 
     });

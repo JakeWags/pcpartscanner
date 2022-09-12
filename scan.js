@@ -21,7 +21,7 @@ app.use(express.urlencoded({
 const searchType = process.env.SEARCHTYPE;
 
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, 'html/scan.html'));
+    res.sendFile(path.join(__dirname, '/src/html/scan.html'));
 });
 
 app.post('/submit-scan', 

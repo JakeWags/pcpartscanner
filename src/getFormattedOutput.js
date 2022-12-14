@@ -25,7 +25,7 @@ async function getFormattedOutput(select, amount) {
                     <a class="link" target="_blank" href="https://www.reddit.com${post.permalink}">${post.title}</a>
                     <a class="btn btn-outline-primary float-right" target="_blank" href="${post.url}">LINK</a>
                 </li>`;
-            console.log(post.created_utc);
+            
             resultCount++;
         });
     });
